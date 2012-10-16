@@ -44,11 +44,12 @@ class HTMLTableGenerator
 
 	<link rel="stylesheet" href="css/normalize.css">
 	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/comparison.css">
 	<script src="js/vendor/modernizr-2.6.1.min.js"></script>
 </head>
 <body>
 <h1>#{@global_name}</h1>
-<table>
+<table class="comparison">
 <tr>
 	<th/>
 __EOF__
