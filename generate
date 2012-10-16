@@ -18,18 +18,36 @@ class HTMLTableGenerator
 				@topic_names[topic] = name
 			}
 		}
+
+		@global_name = File.open("#{dir}/desc-#{LANG}").read.chomp
 	end
 
 	def run
 		global_header
-		process_dir(1, @dir)
+		recurse_dir(1, @dir)
 		global_footer
 	end
 
 	def global_header
 		@out.puts <<__EOF__
-<html>
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>#{@global_name}</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width">
+
+	<link rel="stylesheet" href="css/normalize.css">
+	<link rel="stylesheet" href="css/main.css">
+	<script src="js/vendor/modernizr-2.6.1.min.js"></script>
+</head>
 <body>
+<h1>#{@global_name}</h1>
 <table>
 <tr>
 	<th/>
@@ -46,6 +64,14 @@ __EOF__
 </body>
 </html>
 __EOF__
+	end
+
+	def recurse_dir(depth, dir)
+		Dir.glob("#{dir}/*").sort.each { |d|
+			next unless FileTest.directory?(d)
+			process_dir(depth, d)
+			recurse_dir(depth + 1, d)
+		}
 	end
 
 	def process_dir(depth, dir)
@@ -74,11 +100,6 @@ __EOF__
 			}
 			@out.puts '</tr>'
 		end
-
-		Dir.glob("#{dir}/*").sort.each { |d|
-			next unless FileTest.directory?(d)
-			process_dir(depth + 1, d)
-		}
 	end
 end
 

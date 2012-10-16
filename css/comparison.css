@@ -1,0 +1,24 @@
+table.comparison {
+	border-collapse: collapse;
+}
+
+table.comparison td, table.comparison th {
+	border: 1px solid #444444;
+	padding: 0.2em 0.5em;
+}
+
+tr.data th {
+	background: #ECDEBF;
+}
+
+tr.header1 th {
+	background: #999A8B;
+}
+
+tr.header2 th {
+	background: #5D5350;
+}
+
+tr.header3 th {
+	background: #7B6356;
+}
