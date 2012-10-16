@@ -1,0 +1,90 @@
+#!/usr/bin/env ruby
+
+class HTMLTableGenerator
+	LANG = 'en'
+
+	def initialize(dir, out)
+		@dir = dir
+		@out = out
+
+		@topics = []
+		@topic_names = {}
+
+		File.open("#{dir}/topics-#{LANG}", 'r') { |f|
+			f.each_line { |l|
+				l.chomp!
+				topic, name = l.split(/\t/)
+				@topics << topic
+				@topic_names[topic] = name
+			}
+		}
+	end
+
+	def run
+		global_header
+		process_dir(1, @dir)
+		global_footer
+	end
+
+	def global_header
+		@out.puts <<__EOF__
+<html>
+<body>
+<table>
+<tr>
+	<th/>
+__EOF__
+		@topics.each { |t|
+			@out.puts "\t<th>#{@topic_names[t]}</th>"
+		}
+		@out.puts '</tr>'
+	end
+
+	def global_footer
+		@out.puts <<__EOF__
+</table>
+</body>
+</html>
+__EOF__
+	end
+
+	def process_dir(depth, dir)
+		desc = File.open("#{dir}/desc-#{LANG}").read.chomp
+		only_header = true
+		data = {}
+		@topics.each { |t|
+			fn = "#{dir}/#{t}"
+			if FileTest.readable?(fn)
+				data[t] = File.open(fn).read.chomp
+				only_header = false
+			end
+		}
+
+		if only_header
+			@out.puts <<__EOF__
+<tr class="header#{depth}">
+	<th colspan="#{@topics.length + 1}">#{desc}</th>
+</tr>
+__EOF__
+		else
+			@out.puts '<tr class="data">'
+			@out.puts "\t<th>#{desc}</th>"
+			data.each { |d|
+				@out.puts "\t<td>#{d}</td>"
+			}
+			@out.puts '</tr>'
+		end
+
+		Dir.glob("#{dir}/*").sort.each { |d|
+			next unless FileTest.directory?(d)
+			process_dir(depth + 1, d)
+		}
+	end
+end
+
+unless ARGV.length == 1
+	puts 'Usage: generate <base-dir>'
+	exit 1
+end
+
+HTMLTableGenerator.new(ARGV[0], $stdout).run
