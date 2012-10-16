@@ -96,8 +96,10 @@ __EOF__
 		else
 			@out.puts '<tr class="data">'
 			@out.puts "\t<th>#{desc}</th>"
-			data.each { |d|
-				@out.puts "\t<td>#{d}</td>"
+			@topics.each { |t|
+				s = data[t]
+				s = '?' if s.nil?
+				@out.puts "\t<td><pre>#{s}</pre></td>"
 			}
 			@out.puts '</tr>'
 		end
