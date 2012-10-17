@@ -5,20 +5,30 @@ table.comparison {
 table.comparison td, table.comparison th {
 	border: 1px solid #444444;
 	padding: 0.2em 0.5em;
+        vertical-align: top;
+}
+
+table.comparison pre {
+	margin: 0;
 }
 
 tr.data th {
 	background: #ECDEBF;
+	font-weight: normal;
+	text-align: left;
 }
 
 tr.header1 th {
 	background: #999A8B;
+	font-size: 200%;
 }
 
 tr.header2 th {
 	background: #5D5350;
+	font-size: 175%;
 }
 
 tr.header3 th {
 	background: #7B6356;
+	font-size: 150%;
 }
