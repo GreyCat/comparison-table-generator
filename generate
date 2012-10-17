@@ -50,7 +50,7 @@ class HTMLTableGenerator
 <body>
 <h1>#{@global_name}</h1>
 <table class="comparison">
-<tr>
+<tr class="topic-header">
 	<th/>
 __EOF__
 		@topics.each { |t|
