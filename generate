@@ -51,10 +51,20 @@ class HTMLTableGenerator
 	<link rel="stylesheet" href="css/main.css">
 	<link rel="stylesheet" href="css/comparison.css">
 	<script src="js/vendor/modernizr-2.6.1.min.js"></script>
+	<script src="js/comparison.js"></script>
 </head>
 <body>
 <h1>#{@global_name}</h1>
-<table class="comparison">
+<div class="comparison-header">
+	<ul>
+__EOF__
+		@topics.each_with_index { |t, i|
+			@out.puts "\t\t<li><input type=\"checkbox\" checked=\"1\" onclick=\"javascript:switchColumn(this, #{i + 1});\"/> #{@topic_names[t]}</li>"
+		}
+		@out.puts <<__EOF__
+	</ul>
+</div>
+<table class="comparison" id="comparison">
 <tr class="topic-header">
 	<th/>
 __EOF__
