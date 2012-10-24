@@ -1,16 +1,21 @@
 #!/usr/bin/env ruby
 
-class HTMLTableGenerator
-	LANG = 'en'
+require 'optparse'
 
-	def initialize(dir, out)
-		@dir = dir
+class HTMLTableGenerator
+	DEFAULT_LANG = 'en'
+
+	def initialize(options, out)
+		@dir = options[:dir]
 		@out = out
 
 		@topics = []
 		@topic_names = {}
 
-		File.open("#{dir}/topics-#{LANG}", 'r') { |f|
+		@lang = options[:lang] || DEFAULT_LANG
+		options[:topics] = "#{@dir}/topics-#{@lang}" unless options[:topics]
+
+		File.open(options[:topics], 'r') { |f|
 			f.each_line { |l|
 				l.chomp!
 				topic, name = l.split(/\t/)
@@ -19,7 +24,7 @@ class HTMLTableGenerator
 			}
 		}
 
-		@global_name = File.open("#{dir}/desc-#{LANG}").read.chomp
+		@global_name = File.open("#{@dir}/desc-#{@lang}").read.chomp
 	end
 
 	def run
@@ -76,7 +81,7 @@ __EOF__
 	end
 
 	def process_dir(depth, dir)
-		desc = File.open("#{dir}/desc-#{LANG}").read.chomp
+		desc = File.open("#{dir}/desc-#{@lang}").read.chomp
 		only_header = true
 		data = {}
 		@topics.each { |t|
@@ -106,9 +111,19 @@ __EOF__
 	end
 end
 
+options = {}
+parser = OptionParser.new { |opts|
+	opts.banner = 'Usage: generate [options] <base-dir>'
+
+	opts.on('-t', '--topics=FILE', 'Topic dictionary file') { |a| options[:topics] = a }
+	opts.on('-l', '--lang=CODE', 'Language to use in output') { |a| options[:lang] = a }
+}
+parser.parse!
+
 unless ARGV.length == 1
-	puts 'Usage: generate <base-dir>'
+	puts parser
 	exit 1
 end
+options[:dir] = ARGV[0]
 
-HTMLTableGenerator.new(ARGV[0], $stdout).run
+HTMLTableGenerator.new(options, $stdout).run
