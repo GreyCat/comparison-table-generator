@@ -112,9 +112,18 @@ __EOF__
 			@out.puts '<tr class="data">'
 			@out.puts "\t<th>#{desc}</th>"
 			@topics.each { |t|
+				refs_layout = ''
+				fn = "#{dir}/#{t}-ref"
+				if FileTest.readable?(fn)
+					refs = File.open(fn).readlines
+					refs_layout = refs.map { |x|
+						"<a class=\"reflink\" href=\"#{x.chomp}\">[?]</a>"
+					}.join
+				end
+
 				s = data[t]
 				s = '?' if s.nil?
-				@out.puts "\t<td><pre>#{s}</pre></td>"
+				@out.puts "\t<td>#{refs_layout}<pre>#{s}</pre></td>"
 			}
 			@out.puts '</tr>'
 		end
