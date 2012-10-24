@@ -117,7 +117,7 @@ __EOF__
 				if FileTest.readable?(fn)
 					refs = File.open(fn).readlines
 					refs_layout = refs.map { |x|
-						"<a class=\"reflink\" href=\"#{x.chomp}\">[?]</a>"
+						"<a class=\"reflink\" href=\"#{x.chomp}\">?</a>"
 					}.join
 				end
 
