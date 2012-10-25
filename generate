@@ -123,7 +123,23 @@ __EOF__
 
 				s = data[t]
 				s = '?' if s.nil?
-				@out.puts "\t<td>#{refs_layout}<pre>#{s}</pre></td>"
+
+				# Special tags that influence cell styles: must be come first
+				css_class = nil
+				case s
+				when /^<yes\s*\/?>(.*)$/mi
+					css_class = 'cell_yes'
+					s = "<div class=\"cell_symbol\">\u2611</div>\n#{$1}"
+				when /^<no\s*\/?>(.*)$/mi
+					css_class = 'cell_no'
+					s = "<div class=\"cell_symbol\">\u2610</div>\n#{$1}"
+				when /^<na\s*\/?>(.*)$/mi
+					css_class = 'cell_na'
+					s = "<div class=\"cell_symbol\">N/A</div>\n#{$1}"
+				end
+				css_layout = css_class ? " class=\"#{css_class}\"" : ''
+
+				@out.puts "\t<td#{css_layout}>#{refs_layout}<pre>#{s}</pre></td>"
 			}
 			@out.puts '</tr>'
 		end
