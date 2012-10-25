@@ -70,3 +70,20 @@ tr.header3 th {
 	background: #7B6356;
 	font-size: 150%;
 }
+
+.cell_symbol {
+	text-align: center;
+	font-size: 150%;
+}
+
+.cell_yes {
+	background: #E0FFE0;
+}
+
+.cell_no {
+	background: #FFE0E0;
+}
+
+.cell_na {
+	background: #C0C0C0;
+}
