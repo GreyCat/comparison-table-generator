@@ -139,7 +139,7 @@ __EOF__
 				end
 				css_layout = css_class ? " class=\"#{css_class}\"" : ''
 
-				@out.puts "\t<td#{css_layout}>#{refs_layout}<pre>#{s}</pre></td>"
+				@out.puts "\t<td#{css_layout}>#{refs_layout}#{s}</td>"
 			}
 			@out.puts '</tr>'
 		end
