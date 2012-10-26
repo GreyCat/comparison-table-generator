@@ -2,6 +2,22 @@
 
 require 'optparse'
 
+class Counters
+	attr_accessor :total
+	attr_accessor :empty
+	attr_accessor :no_ref
+
+	def initialize
+		@total = 0
+		@empty = 0
+		@no_ref = 0
+	end
+
+	def to_s
+		sprintf '%d (%d%% empty, %d%% w/o ref)', @total, @empty * 100.0 / @total, @no_ref * 100.0 / @total
+	end
+end
+
 class HTMLTableGenerator
 	DEFAULT_LANG = 'en'
 
@@ -11,6 +27,7 @@ class HTMLTableGenerator
 
 		@topics = []
 		@topic_names = {}
+		@stat = { '_total' => Counters.new }
 
 		@lang = options[:lang] || DEFAULT_LANG
 		options[:topics] = "#{@dir}/topics-#{@lang}" unless options[:topics]
@@ -21,10 +38,12 @@ class HTMLTableGenerator
 				topic, name = l.split(/\t/)
 				@topics << topic
 				@topic_names[topic] = name
+				@stat[topic] = Counters.new
 			}
 		}
 
 		@global_name = File.open("#{@dir}/desc-#{@lang}").read.chomp
+
 	end
 
 	def run
@@ -77,6 +96,14 @@ __EOF__
 	def global_footer
 		@out.puts <<__EOF__
 </table>
+<!--
+Statistics:
+__EOF__
+		@stat.keys.sort.each { |k|
+			@out.printf "%25s: %s\n", k, @stat[k]
+		}
+		@out.puts <<__EOF__
+-->
 </body>
 </html>
 __EOF__
@@ -112,6 +139,9 @@ __EOF__
 			@out.puts '<tr class="data">'
 			@out.puts "\t<th>#{desc}</th>"
 			@topics.each { |t|
+				@stat['_total'].total += 1
+				@stat[t].total += 1
+
 				refs_layout = ''
 				fn = "#{dir}/#{t}-ref"
 				if FileTest.readable?(fn)
@@ -122,7 +152,16 @@ __EOF__
 				end
 
 				s = data[t]
-				s = '?' if s.nil?
+				if s.nil?
+					s = '?'
+					@stat['_total'].empty += 1
+					@stat[t].empty += 1
+				end
+
+				if refs_layout == ''
+					@stat['_total'].no_ref += 1
+					@stat[t].no_ref += 1
+				end
 
 				# Special tags that influence cell styles: must be come first
 				css_class = nil
