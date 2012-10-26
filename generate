@@ -53,13 +53,13 @@ class HTMLTableGenerator
 	<script src="js/vendor/modernizr-2.6.1.min.js"></script>
 	<script src="js/comparison.js"></script>
 </head>
-<body>
+<body onload="javascript:loadSelected();">
 <h1>#{@global_name}</h1>
 <div class="comparison-header">
 	<ul>
 __EOF__
 		@topics.each_with_index { |t, i|
-			@out.puts "\t\t<li><input type=\"checkbox\" checked=\"1\" onclick=\"javascript:switchColumn(this, #{i + 1});\"/> #{@topic_names[t]}</li>"
+			@out.puts "\t\t<li><input id=\"check-#{t}\" type=\"checkbox\" checked=\"1\" onclick=\"javascript:switchColumn(this, #{i + 1});\"/> #{@topic_names[t]}</li>"
 		}
 		@out.puts <<__EOF__
 	</ul>
@@ -69,7 +69,7 @@ __EOF__
 	<th/>
 __EOF__
 		@topics.each { |t|
-			@out.puts "\t<th>#{@topic_names[t]}</th>"
+			@out.puts "\t<th id=\"column-#{t}\">#{@topic_names[t]}</th>"
 		}
 		@out.puts '</tr>'
 	end
