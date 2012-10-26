@@ -24,6 +24,11 @@ table.comparison pre + pre {
         padding-top: 0.5em;
 }
 
+table.comparison ul {
+	margin: 0;
+	padding-left: 1em;
+}
+
 a.reflink {
 	display: block;
         width: 2em;
