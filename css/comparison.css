@@ -18,6 +18,10 @@ table.comparison pre {
 	font-size: 90%;
 }
 
+table.comparison code {
+	font-size: 90%;
+}
+
 table.comparison pre + pre {
 	border-top: 1px dotted #808080;
         margin-top: 0.5em;
