@@ -2,6 +2,8 @@
 
 require 'optparse'
 
+DEFAULT_OUTPUT_DIR = 'out'
+
 class Counters
 	attr_accessor :total
 	attr_accessor :empty
@@ -185,12 +187,15 @@ __EOF__
 	end
 end
 
-options = {}
+options = {
+	:out => DEFAULT_OUTPUT_DIR,
+}
 parser = OptionParser.new { |opts|
 	opts.banner = 'Usage: generate [options] <base-dir>'
 
 	opts.on('-t', '--topics=FILE', 'Topic dictionary file') { |a| options[:topics] = a }
 	opts.on('-l', '--lang=CODE', 'Language to use in output') { |a| options[:lang] = a }
+	opts.on('-o', '--out=DIR', "Output directory (default = #{DEFAULT_OUTPUT_DIR})") { |a| options[:out] = a }
 }
 parser.parse!
 
@@ -200,4 +205,6 @@ unless ARGV.length == 1
 end
 options[:dir] = ARGV[0]
 
-HTMLTableGenerator.new(options, $stdout).run
+Dir.mkdir(options[:out])
+out_stream = File.open(File.join(options[:out], 'full.html'), 'w')
+HTMLTableGenerator.new(options, out_stream).run
