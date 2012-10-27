@@ -1,8 +1,10 @@
 #!/usr/bin/env ruby
 
 require 'optparse'
+require 'fileutils'
 
 DEFAULT_OUTPUT_DIR = 'out'
+DEFAULT_STYLE_DIR = '.'
 
 class Counters
 	attr_accessor :total
@@ -189,6 +191,7 @@ end
 
 options = {
 	:out => DEFAULT_OUTPUT_DIR,
+	:style => DEFAULT_STYLE_DIR,
 }
 parser = OptionParser.new { |opts|
 	opts.banner = 'Usage: generate [options] <base-dir>'
@@ -196,6 +199,7 @@ parser = OptionParser.new { |opts|
 	opts.on('-t', '--topics=FILE', 'Topic dictionary file') { |a| options[:topics] = a }
 	opts.on('-l', '--lang=CODE', 'Language to use in output') { |a| options[:lang] = a }
 	opts.on('-o', '--out=DIR', "Output directory (default = #{DEFAULT_OUTPUT_DIR})") { |a| options[:out] = a }
+	opts.on('-s', '--style=DIR', "Style template directory (default = #{DEFAULT_STYLE_DIR})") { |a| options[:style] = a }
 }
 parser.parse!
 
@@ -206,5 +210,8 @@ end
 options[:dir] = ARGV[0]
 
 Dir.mkdir(options[:out])
+['css', 'js'].each { |dir|
+	FileUtils.cp_r(File.join(options[:style], dir), options[:out])
+}
 out_stream = File.open(File.join(options[:out], 'full.html'), 'w')
 HTMLTableGenerator.new(options, out_stream).run
