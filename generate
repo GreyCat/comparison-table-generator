@@ -3,9 +3,6 @@
 require 'optparse'
 require 'fileutils'
 
-DEFAULT_OUTPUT_DIR = 'out'
-DEFAULT_STYLE_DIR = '.'
-
 class Counters
 	attr_accessor :total
 	attr_accessor :empty
@@ -190,16 +187,16 @@ __EOF__
 end
 
 options = {
-	:out => DEFAULT_OUTPUT_DIR,
-	:style => DEFAULT_STYLE_DIR,
+	:out => 'out',
+	:style => '.',
 }
 parser = OptionParser.new { |opts|
 	opts.banner = 'Usage: generate [options] <base-dir>'
 
 	opts.on('-t', '--topics=FILE', 'Topic dictionary file') { |a| options[:topics] = a }
 	opts.on('-l', '--lang=CODE', 'Language to use in output') { |a| options[:lang] = a }
-	opts.on('-o', '--out=DIR', "Output directory (default = #{DEFAULT_OUTPUT_DIR})") { |a| options[:out] = a }
-	opts.on('-s', '--style=DIR', "Style template directory (default = #{DEFAULT_STYLE_DIR})") { |a| options[:style] = a }
+	opts.on('-o', '--out=DIR', "Output directory (default: #{options[:out]})") { |a| options[:out] = a }
+	opts.on('-s', '--style=DIR', "Style template directory (default: #{options[:style]})") { |a| options[:style] = a }
 }
 parser.parse!
 
