@@ -189,7 +189,7 @@ end
 
 options = {
 	:out => 'out',
-	:style => '.',
+	:style => 'style',
 }
 parser = OptionParser.new { |opts|
 	opts.banner = 'Usage: generate [options] <base-dir>'
