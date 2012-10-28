@@ -1,8 +1,20 @@
 #!/usr/bin/env ruby
 # -*- coding: UTF-8 -*-
 
+# Ruby 1.8 compatiblity hack
+unless Kernel.respond_to?(:require_relative)
+	module Kernel
+		def require_relative(path)
+			require File.join(File.dirname(caller[0]), path.to_str)
+		end
+	end
+end
+
 require 'optparse'
 require 'fileutils'
+
+require_relative 'htmltablegenerator'
+require_relative 'generator'
 
 DEFAULT_LANG = 'en'
 
@@ -19,205 +31,6 @@ class Counters
 
 	def to_s
 		sprintf '%d (%d%% empty, %d%% w/o ref)', @total, @empty * 100.0 / @total, @no_ref * 100.0 / @total
-	end
-end
-
-class HTMLTableGenerator
-	def initialize(gen, out)
-		@gen = gen
-		@out = out
-	end
-
-	def global_header
-		@out.puts <<__EOF__
-<!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<title>#{@gen.global_name}</title>
-	<meta name="description" content="">
-	<meta name="viewport" content="width=device-width">
-
-	<link rel="stylesheet" href="css/normalize.css">
-	<link rel="stylesheet" href="css/main.css">
-	<link rel="stylesheet" href="css/comparison.css">
-	<script src="js/vendor/modernizr-2.6.1.min.js"></script>
-	<script src="js/comparison.js"></script>
-</head>
-<body onload="javascript:loadSelected();">
-<h1>#{@gen.global_name}</h1>
-<div class="comparison-header">
-	<ul>
-__EOF__
-		@gen.topics.each_with_index { |t, i|
-			@out.puts "\t\t<li><input id=\"check-#{t}\" type=\"checkbox\" checked=\"1\" onclick=\"javascript:switchColumn(this, #{i + 1});\"/> #{@gen.topic_names[t]}</li>"
-		}
-		@out.puts <<__EOF__
-	</ul>
-</div>
-<table class="comparison" id="comparison">
-<tr class="topic-header">
-	<th/>
-__EOF__
-		@gen.topics.each { |t|
-			@out.puts "\t<th id=\"column-#{t}\">#{@gen.topic_names[t]}</th>"
-		}
-		@out.puts '</tr>'
-	end
-
-	def global_footer
-		@out.puts <<__EOF__
-</table>
-</body>
-</html>
-__EOF__
-	end
-
-	def row_header(depth, desc)
-		@out.puts <<__EOF__
-<tr class="header#{depth}">
-	<th colspan="#{@gen.topics.length + 1}">#{desc}</th>
-</tr>
-__EOF__
-	end
-
-	def row(desc, cols)
-		@out.puts '<tr class="data">'
-		@out.puts "\t<th>#{desc}</th>"
-		cols.each { |c|
-			refs_layout = if c[:refs]
-				c[:refs].map { |x|
-					"<a class=\"reflink\" href=\"#{x.chomp}\">?</a>"
-				}.join
-			else
-				''
-			end
-
-			s = c[:data] || '?'
-
-			# Special tags that influence cell styles: must be come first
-			css_class = nil
-			case s
-			when /^<yes\s*\/?>(.*)$/mi
-				css_class = 'cell_yes'
-				s = "<div class=\"cell_symbol\">\u2611</div>\n#{$1}"
-			when /^<no\s*\/?>(.*)$/mi
-				css_class = 'cell_no'
-				s = "<div class=\"cell_symbol\">\u2610</div>\n#{$1}"
-			when /^<na\s*\/?>(.*)$/mi
-				css_class = 'cell_na'
-				s = "<div class=\"cell_symbol\">N/A</div>\n#{$1}"
-			end
-			css_layout = css_class ? " class=\"#{css_class}\"" : ''
-
-			@out.puts "\t<td#{css_layout}>#{refs_layout}#{s}</td>"
-		}
-		@out.puts '</tr>'
-	end
-end
-
-class Generator
-	attr_reader :topics
-	attr_reader :topic_names
-	attr_reader :global_name
-
-	def initialize(opt)
-		@opt = opt
-
-		@topics = []
-		@topic_names = {}
-		@stat = { '_total' => Counters.new }
-
-		@lang = @opt[:lang] || DEFAULT_LANG
-		@opt[:topics] = "#{@opt[:dir]}/topics-#{@lang}" unless @opt[:topics]
-
-		File.open(@opt[:topics], 'r') { |f|
-			f.each_line { |l|
-				l.chomp!
-				topic, name = l.split(/\t/)
-				@topics << topic
-				@topic_names[topic] = name
-				@stat[topic] = Counters.new
-			}
-		}
-
-		@global_name = File.open("#{@opt[:dir]}/desc-#{@lang}").read.chomp
-	end
-
-	def run
-		Dir.mkdir(@opt[:out])
-		['css', 'js'].each { |dir|
-			FileUtils.cp_r(File.join(@opt[:style], dir), @opt[:out])
-		}
-
-		@full_page = HTMLTableGenerator.new(
-			self,
-			File.open(File.join(@opt[:out], 'full.html'), 'w')
-		)
-
-		@full_page.global_header
-		recurse_dir(1, @opt[:dir])
-		@full_page.global_footer
-
-		report_stat
-	end
-
-	def recurse_dir(depth, dir)
-		Dir.glob("#{dir}/*").sort.each { |d|
-			next unless FileTest.directory?(d)
-			process_dir(depth, d)
-			recurse_dir(depth + 1, d)
-		}
-	end
-
-	def process_dir(depth, dir)
-		desc = File.open("#{dir}/desc-#{@lang}").read.chomp
-		only_header = true
-		data = {}
-		@topics.each { |t|
-			fn = "#{dir}/#{t}"
-			if FileTest.readable?(fn)
-				data[t] = File.open(fn).read.chomp
-				only_header = false
-			end
-		}
-
-		if only_header
-			@full_page.row_header(depth, desc)
-		else
-			cols = []
-			@topics.each { |t|
-				c = { :data => data[t] }
-				@stat['_total'].total += 1
-				@stat[t].total += 1
-
-				if c[:data].nil?
-					@stat['_total'].empty += 1
-					@stat[t].empty += 1
-				end
-
-				fn = "#{dir}/#{t}-ref"
-				c[:refs] = File.open(fn).readlines if FileTest.readable?(fn)
-				if c[:refs].nil?
-					@stat['_total'].no_ref += 1
-					@stat[t].no_ref += 1
-				end
-
-				cols << c
-			}
-			@full_page.row(desc, cols)
-		end
-	end
-
-	def report_stat
-		puts "Statistics:"
-		@stat.keys.sort.each { |k|
-			printf "%25s: %s\n", k, @stat[k]
-		}
 	end
 end
 
