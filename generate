@@ -13,8 +13,6 @@ end
 require 'optparse'
 require 'fileutils'
 
-require_relative 'statistics'
-require_relative 'htmltablegenerator'
 require_relative 'generator'
 
 DEFAULT_LANG = 'en'

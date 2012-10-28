@@ -1,3 +1,6 @@
+require_relative 'statistics'
+require_relative 'htmltablegenerator'
+
 class Generator
 	attr_reader :topics
 	attr_reader :topic_names
