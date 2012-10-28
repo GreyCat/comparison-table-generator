@@ -8,7 +8,7 @@ class Generator
 
 		@topics = []
 		@topic_names = {}
-		@stat = { '_total' => Counters.new }
+		@stat = Statistics.new
 
 		@lang = @opt[:lang] || DEFAULT_LANG
 		@opt[:topics] = "#{@opt[:dir]}/topics-#{@lang}" unless @opt[:topics]
@@ -19,7 +19,6 @@ class Generator
 				topic, name = l.split(/\t/)
 				@topics << topic
 				@topic_names[topic] = name
-				@stat[topic] = Counters.new
 			}
 		}
 
@@ -41,7 +40,7 @@ class Generator
 		recurse_dir(1, @opt[:dir])
 		@full_page.global_footer
 
-		report_stat
+		@stat.report
 	end
 
 	def recurse_dir(depth, dir)
@@ -70,31 +69,17 @@ class Generator
 			cols = []
 			@topics.each { |t|
 				c = { :data => data[t] }
-				@stat['_total'].total += 1
-				@stat[t].total += 1
-
-				if c[:data].nil?
-					@stat['_total'].empty += 1
-					@stat[t].empty += 1
-				end
 
 				fn = "#{dir}/#{t}-ref"
 				c[:refs] = File.open(fn).readlines if FileTest.readable?(fn)
-				if c[:refs].nil?
-					@stat['_total'].no_ref += 1
-					@stat[t].no_ref += 1
-				end
+
+				@stat.inc!(t, :total)
+				@stat.inc!(t, :empty) if c[:data].nil?
+				@stat.inc!(t, :no_ref) if c[:refs].nil?
 
 				cols << c
 			}
 			@full_page.row(desc, cols)
 		end
-	end
-
-	def report_stat
-		puts "Statistics:"
-		@stat.keys.sort.each { |k|
-			printf "%25s: %s\n", k, @stat[k]
-		}
 	end
 end

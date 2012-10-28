@@ -13,26 +13,11 @@ end
 require 'optparse'
 require 'fileutils'
 
+require_relative 'statistics'
 require_relative 'htmltablegenerator'
 require_relative 'generator'
 
 DEFAULT_LANG = 'en'
-
-class Counters
-	attr_accessor :total
-	attr_accessor :empty
-	attr_accessor :no_ref
-
-	def initialize
-		@total = 0
-		@empty = 0
-		@no_ref = 0
-	end
-
-	def to_s
-		sprintf '%d (%d%% empty, %d%% w/o ref)', @total, @empty * 100.0 / @total, @no_ref * 100.0 / @total
-	end
-end
 
 options = {
 	:out => 'out',
