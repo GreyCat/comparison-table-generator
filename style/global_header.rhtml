@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title><%= global_name %></title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width">
+
+	<link rel="stylesheet" href="css/normalize.css">
+	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/comparison.css">
+	<script src="js/vendor/modernizr-2.6.1.min.js"></script>
+	<script src="js/comparison.js"></script>
+</head>
+<body onload="javascript:loadSelected();">
+<h1><%= global_name %></h1>
+<div class="comparison-header">
+	<ul>
+<% topics.each_with_index { |t, i| %>
+		<li><input id="check-<%= t %>" type="checkbox" checked="1" onclick="javascript:switchColumn(this, <%= i + 1 %>);"/> <%= topic_names[t] %></li>
+<% } %>
+	</ul>
+</div>
+<table class="comparison" id="comparison">
+<tr class="topic-header">
+	<th/>
+<% topics.each { |t| %>
+	<th id="column-<%= t %>"><%= topic_names[t] %></th>
+<% } %>
+</tr>

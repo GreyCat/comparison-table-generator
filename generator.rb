@@ -37,6 +37,7 @@ class Generator
 
 		@full_page = HTMLTableGenerator.new(
 			self,
+			@opt[:style],
 			File.open(File.join(@opt[:out], 'full.html'), 'w')
 		)
 
@@ -129,5 +130,10 @@ class Generator
 
 		# Kind must be a valid kind
 		raise ParseException.new("Invalid kind of file '#{kind}' encountered in file '#{fn}'") unless kind.nil? or KINDS.include?(kind)
+	end
+
+	# Propagation method for ERB templates to access generator fields
+	def get_binding
+		binding
 	end
 end

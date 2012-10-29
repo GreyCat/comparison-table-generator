@@ -1,58 +1,24 @@
 # -*- coding: utf-8 -*-
 
+require 'erb'
+
 class HTMLTableGenerator
-	def initialize(gen, out)
+	def initialize(gen, style, out)
 		@gen = gen
+		@style = style
 		@out = out
 	end
 
-	def global_header
-		@out.puts <<__EOF__
-<!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<title>#{@gen.global_name}</title>
-	<meta name="description" content="">
-	<meta name="viewport" content="width=device-width">
+	def process_rhtml(filename)
+		@out << ERB.new(File.open("#{@style}/#{filename}").read).result(@gen.get_binding)
+	end
 
-	<link rel="stylesheet" href="css/normalize.css">
-	<link rel="stylesheet" href="css/main.css">
-	<link rel="stylesheet" href="css/comparison.css">
-	<script src="js/vendor/modernizr-2.6.1.min.js"></script>
-	<script src="js/comparison.js"></script>
-</head>
-<body onload="javascript:loadSelected();">
-<h1>#{@gen.global_name}</h1>
-<div class="comparison-header">
-	<ul>
-__EOF__
-		@gen.topics.each_with_index { |t, i|
-			@out.puts "\t\t<li><input id=\"check-#{t}\" type=\"checkbox\" checked=\"1\" onclick=\"javascript:switchColumn(this, #{i + 1});\"/> #{@gen.topic_names[t]}</li>"
-		}
-		@out.puts <<__EOF__
-	</ul>
-</div>
-<table class="comparison" id="comparison">
-<tr class="topic-header">
-	<th/>
-__EOF__
-		@gen.topics.each { |t|
-			@out.puts "\t<th id=\"column-#{t}\">#{@gen.topic_names[t]}</th>"
-		}
-		@out.puts '</tr>'
+	def global_header
+		process_rhtml('global_header.rhtml')
 	end
 
 	def global_footer
-		@out.puts <<__EOF__
-</table>
-</body>
-</html>
-__EOF__
+		process_rhtml('global_footer.rhtml')
 	end
 
 	def row_header(depth, desc)
