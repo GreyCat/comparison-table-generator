@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 class Statistics
 	class Counter
 		def initialize

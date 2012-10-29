@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 
 # Ruby 1.8 compatiblity hack
 unless Kernel.respond_to?(:require_relative)

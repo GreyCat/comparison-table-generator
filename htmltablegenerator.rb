@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 class HTMLTableGenerator
 	def initialize(gen, out)
 		@gen = gen
