@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 require_relative 'statistics'
+require_relative 'htmlgenerator'
 require_relative 'htmltablegenerator'
+
+$tmpcnt = 0
 
 class Generator
 	attr_reader :topics
@@ -82,6 +85,10 @@ class Generator
 				@stat.inc!(t, :total)
 				@stat.inc!(t, :empty) if c[:data].nil?
 				@stat.inc!(t, :no_ref) if c[:refs].nil?
+
+				cell_page = HTMLGenerator.new(@opt, 'cell.rhtml', "#{$tmpcnt}.html")
+				cell_page.run(binding)
+				$tmpcnt += 1
 
 				cols << c
 			}
