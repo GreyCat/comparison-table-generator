@@ -2,4 +2,9 @@
 	<div class="topic"><%= @topic_names[t] %></div>
 	<div class="question">Q: <%= desc %></div>
 	<div class="answer">A: <%= c[:data] %></div>
+	<ul class="references">
+<% (c[:refs] || []).each { |r| %>
+		<li><a href="<%= r %>"><%= r %></a></li>
+<% } %>
+	</ul>
 </div>
