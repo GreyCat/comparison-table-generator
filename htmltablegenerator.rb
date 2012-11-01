@@ -58,7 +58,7 @@ __EOF__
 			end
 			css_layout = css_class ? " class=\"#{css_class}\"" : ''
 
-			@out.puts "\t<td#{css_layout}>#{refs_layout}#{s}</td>"
+			@out.puts "\t<td#{css_layout}>#{refs_layout}<a class=\"cell-link\" href=\"#{c[:link]}\">#{s}</a></td>"
 		}
 		@out.puts '</tr>'
 	end

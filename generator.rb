@@ -86,7 +86,9 @@ class Generator
 				@stat.inc!(t, :empty) if c[:data].nil?
 				@stat.inc!(t, :no_ref) if c[:refs].nil?
 
-				cell_page = HTMLGenerator.new(@opt, 'cell.rhtml', "#{$tmpcnt}.html")
+				c[:link] = "#{$tmpcnt}.html"
+
+				cell_page = HTMLGenerator.new(@opt, 'cell.rhtml', c[:link])
 				cell_page.run(binding)
 				$tmpcnt += 1
 
