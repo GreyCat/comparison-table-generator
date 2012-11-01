@@ -31,16 +31,8 @@ __EOF__
 
 	def row(desc, cols)
 		@out.puts '<tr class="data">'
-		@out.puts "\t<th>#{desc}</th>"
+		@out.puts "\t<th class=\"cell\">#{desc}</th>"
 		cols.each { |c|
-			refs_layout = if c[:refs]
-				c[:refs].map { |x|
-					"<a class=\"reflink\" href=\"#{x.chomp}\">?</a>"
-				}.join
-			else
-				''
-			end
-
 			s = c[:data] || '?'
 
 			# Special tags that influence cell styles: must be come first
@@ -58,7 +50,13 @@ __EOF__
 			end
 			css_layout = css_class ? " class=\"#{css_class}\"" : ''
 
-			@out.puts "\t<td#{css_layout}>#{refs_layout}<a class=\"cell-link\" href=\"#{c[:link]}\">#{s}</a></td>"
+			@out.puts <<__EOF__
+	<td#{css_layout}>
+		<a class=\"cell-link\" href=\"#{c[:link]}\">
+			<div class=\"cell\">#{s}</div>
+		</a>
+	</td>
+__EOF__
 		}
 		@out.puts '</tr>'
 	end

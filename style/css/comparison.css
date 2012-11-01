@@ -9,8 +9,24 @@ table.comparison {
 
 table.comparison td, table.comparison th {
 	border: 1px solid #444444;
+	vertical-align: top;
+	height: 100%;
+}
+
+a.cell-link {
+	display: inline-block;
+	width: 100%;
+	height: 100%;
+	text-decoration: none;
+	color: #222;
+}
+
+a.cell-link:hover {
+	background: #FEC70A;
+}
+
+.cell {
 	padding: 0.2em 0.5em;
-        vertical-align: top;
 }
 
 table.comparison pre {
