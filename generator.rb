@@ -81,6 +81,14 @@ class Generator
 				@stat.inc!(t, :empty) if c[:data].nil?
 				@stat.inc!(t, :no_ref) if c[:refs].nil?
 
+				# Parse special tags that influence cell
+				# styles: must be come first
+				case c[:data]
+				when /^<(yes|no|na)\s*\/?>(.*)$/mi
+					c[:symbol] = $1
+					c[:data] = $2
+				end
+
 				c[:link] = "#{$tmpcnt}.html"
 
 				render_and_output('cell.rhtml', binding, c[:link])

@@ -1,26 +1,15 @@
 <tr class="data">
 	<th class="cell"><%= desc %></th>
-<%		cols.each { |c|
-			s = c[:data] || '?'
-
-			# Special tags that influence cell styles: must be come first
-			css_class = nil
-			case s
-			when /^<yes\s*\/?>(.*)$/mi
-				css_class = 'cell_yes'
-				s = "<div class=\"cell_symbol\">\u2611</div>\n#{$1}"
-			when /^<no\s*\/?>(.*)$/mi
-				css_class = 'cell_no'
-				s = "<div class=\"cell_symbol\">\u2610</div>\n#{$1}"
-			when /^<na\s*\/?>(.*)$/mi
-				css_class = 'cell_na'
-				s = "<div class=\"cell_symbol\">N/A</div>\n#{$1}"
-			end
-			css_layout = css_class ? " class=\"#{css_class}\"" : ''
-%>
-	<td<%= css_layout %>>
+<% cols.each { |c| %>
+	<td<%= " class=\"cell_#{c[:symbol]}\"" if c[:symbol] %>>
 		<a class="cell-link" href="<%= c[:link] %>">
-			<div class="cell"><%= s %></div>
+			<div class="cell"><%
+case c[:symbol]
+when 'yes' then %><div class="cell_symbol"><%= "\u2611" %></div><%
+when 'no' then %><div class="cell_symbol"><%= "\u2610" %></div><%
+when 'na' then %><div class="cell_symbol">N/A</div><%
+end
+%><%= c[:data] || '?' %></div>
 		</a>
 	</td>
 <%		} %>
