@@ -39,9 +39,9 @@ class Generator
 			FileUtils.cp_r(File.join(@opt[:style], dir), @opt[:out])
 		}
 
-		render_and_output('global_header.rhtml', binding, 'full.html')
+		render_and_output('table_header.rhtml', binding, 'full.html')
 		recurse_dir(1, @opt[:dir])
-		render_and_append('global_footer.rhtml', binding, 'full.html')
+		render_and_append('table_footer.rhtml', binding, 'full.html')
 
 		@stat.report
 	end

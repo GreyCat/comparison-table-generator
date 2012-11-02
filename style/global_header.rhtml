@@ -18,17 +18,3 @@
 </head>
 <body onload="javascript:loadSelected();">
 <h1><%= global_name %></h1>
-<div class="comparison-header">
-	<ul>
-<% topics.each_with_index { |t, i| %>
-		<li><input id="check-<%= t %>" type="checkbox" checked="1" onclick="javascript:switchColumn(this, <%= i + 1 %>);"/> <%= topic_names[t] %></li>
-<% } %>
-	</ul>
-</div>
-<table class="comparison" id="comparison">
-<tr class="topic-header">
-	<th/>
-<% topics.each { |t| %>
-	<th id="column-<%= t %>"><%= topic_names[t] %></th>
-<% } %>
-</tr>
