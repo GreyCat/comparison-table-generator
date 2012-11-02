@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 require_relative 'statistics'
-require_relative 'htmlgenerator'
 require_relative 'htmltablegenerator'
+require_relative 'htmlhelper'
 
 $tmpcnt = 0
 
 class Generator
+	include HTMLHelper
+
 	attr_reader :topics
 	attr_reader :topic_names
 	attr_reader :global_name
@@ -88,8 +90,8 @@ class Generator
 
 				c[:link] = "#{$tmpcnt}.html"
 
-				cell_page = HTMLGenerator.new(@opt, 'cell.rhtml', c[:link])
-				cell_page.run(binding)
+				render_and_output('cell.rhtml', binding, c[:link])
+
 				$tmpcnt += 1
 
 				cols << c
