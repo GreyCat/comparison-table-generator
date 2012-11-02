@@ -12,6 +12,6 @@ module HTMLHelper
 
 	def render(tmpl_file, data)
 		tmpl = File.open(File.join(@opt[:style], tmpl_file)).read
-		ERB.new(tmpl).result(data)
+		ERB.new(tmpl, nil, nil, "_e#{tmpl_file.hash.abs}").result(data)
 	end
 end
