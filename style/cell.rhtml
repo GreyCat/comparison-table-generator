@@ -1,3 +1,4 @@
+<%= render('global_header.rhtml', binding) %>
 <div class="question-card">
 	<div class="topic"><%= @topic_names[t] %></div>
 	<div class="question">Q: <%= desc %></div>
@@ -8,3 +9,4 @@
 <% } %>
 	</ul>
 </div>
+<%= render('global_footer.rhtml', binding) %>
