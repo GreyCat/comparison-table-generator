@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 require_relative 'statistics'
-require_relative 'htmltablegenerator'
 require_relative 'htmlhelper'
 
 $tmpcnt = 0
@@ -40,15 +39,9 @@ class Generator
 			FileUtils.cp_r(File.join(@opt[:style], dir), @opt[:out])
 		}
 
-		@full_page = HTMLTableGenerator.new(
-			self,
-			@opt[:style],
-			File.open(File.join(@opt[:out], 'full.html'), 'w')
-		)
-
-		@full_page.global_header
+		render_and_output('global_header.rhtml', binding, 'full.html')
 		recurse_dir(1, @opt[:dir])
-		@full_page.global_footer
+		render_and_append('global_footer.rhtml', binding, 'full.html')
 
 		@stat.report
 	end
@@ -75,7 +68,7 @@ class Generator
 		}
 
 		if only_header
-			@full_page.row_header(depth, desc)
+			render_and_append('row_header.rhtml', binding, 'full.html')
 		else
 			cols = []
 			@topics.each { |t|
@@ -96,7 +89,7 @@ class Generator
 
 				cols << c
 			}
-			@full_page.row(desc, cols)
+			render_and_append('row.rhtml', binding, 'full.html')
 		end
 	end
 
