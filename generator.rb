@@ -75,7 +75,7 @@ class Generator
 				c = { :data => data[t] }
 
 				fn = "#{dir}/#{t}-ref"
-				c[:refs] = File.open(fn).readlines if FileTest.readable?(fn)
+				c[:refs] = File.open(fn).readlines.each { |x| x.chomp! } if FileTest.readable?(fn)
 
 				@stat.inc!(t, :total)
 				@stat.inc!(t, :empty) if c[:data].nil?
