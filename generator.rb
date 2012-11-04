@@ -19,7 +19,9 @@ class Generator
 		@stat = Statistics.new
 
 		@lang = @opt[:lang] || DEFAULT_LANG
-		@opt[:topics] = "#{@opt[:dir]}/topics-#{@lang}" unless @opt[:topics]
+		@opt[:topics] = find_file(@opt[:dir], 'topics') unless @opt[:topics]
+
+		raise ParseException.new('Main topic file not found') unless @opt[:topics]
 
 		File.open(@opt[:topics], 'r') { |f|
 			f.each_line { |l|
@@ -30,7 +32,7 @@ class Generator
 			}
 		}
 
-		@global_name = File.open("#{@opt[:dir]}/desc-#{@lang}").read.chomp
+		@global_name = read_file(@opt[:dir], 'desc')
 	end
 
 	def run
@@ -56,15 +58,12 @@ class Generator
 	end
 
 	def process_dir(depth, dir)
-		desc = File.open("#{dir}/desc-#{@lang}").read.chomp
+		desc = read_file(dir, 'desc')
 		only_header = true
 		data = {}
 		@topics.each { |t|
-			fn = "#{dir}/#{t}"
-			if FileTest.readable?(fn)
-				data[t] = File.open(fn).read.chomp
-				only_header = false
-			end
+			data[t] = read_file(dir, t)
+			only_header = false if data[t]
 		}
 
 		if only_header
@@ -74,8 +73,8 @@ class Generator
 			@topics.each { |t|
 				c = { :data => data[t] }
 
-				fn = "#{dir}/#{t}-ref"
-				c[:refs] = File.open(fn).readlines.each { |x| x.chomp! } if FileTest.readable?(fn)
+				fn = find_file(dir, "#{t}-ref")
+				c[:refs] = File.open(fn).readlines.each { |x| x.chomp! } if fn
 
 				@stat.inc!(t, :total)
 				@stat.inc!(t, :empty) if c[:data].nil?
@@ -147,5 +146,24 @@ class Generator
 	# Propagation method for ERB templates to access generator fields
 	def get_binding
 		binding
+	end
+
+	# Tries to find a file and returns full path to the file found:
+	# first tries a file in preferred language, then tries a generic
+	# file without a language, and, if all fails, returns nil.
+	def find_file(dir, fn)
+		["#{fn}-#{@lang}", fn].each { |x|
+			f = File.join(dir, x)
+			return f if FileTest.readable?(f)
+		}
+		return nil
+	end
+
+	# Reads a file, trying various localized versions, as specified
+	# in find_file(dir, fn). Returns file as a chomped string, if
+	# found. Returns nil, if file is missing.
+	def read_file(dir, fn)
+		fp = find_file(dir, fn)
+		fp ? File.read(fp).chomp : nil
 	end
 end
