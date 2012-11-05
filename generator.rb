@@ -77,6 +77,8 @@ class Generator
 			@topics.each { |t|
 				c = { :data => data[t] }
 
+				c[:long] = read_file(dir, "#{t}-long")
+
 				fn = find_file(dir, "#{t}-ref")
 				c[:refs] = File.open(fn).readlines.each { |x| x.chomp! } if fn
 
