@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+require 'fileutils'
 require_relative 'statistics'
 require_relative 'htmlhelper'
 
