@@ -160,7 +160,7 @@ class Generator
 	# file without a language, and, if all fails, returns nil.
 	def find_file(dir, fn)
 		["#{fn}-#{@lang}", fn].each { |x|
-			f = File.join(dir, x)
+			f = File.join(@opt[:dir], dir, x)
 			return f if FileTest.readable?(f)
 		}
 		return nil
