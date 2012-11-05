@@ -1,20 +1,15 @@
 require 'erb'
+require 'fileutils'
 
 module HTMLHelper
 	@@tmpl_cache = {}
 
 	def render_and_output(tmpl_file, data, out_file)
-		# TODO: mkdir all components of path
-		File.open(out_path(out_file), 'w') { |f|
-			f << render(tmpl_file, data)
-		}
+		render_to_stream(tmpl_file, data, out_file, 'w')
 	end
 
 	def render_and_append(tmpl_file, data, out_file)
-		# TODO: mkdir all components of path
-		File.open(out_path(out_file), 'a') { |f|
-			f << render(tmpl_file, data)
-		}
+		render_to_stream(tmpl_file, data, out_file, 'a')
 	end
 
 	def render(tmpl_file, data)
@@ -30,5 +25,13 @@ module HTMLHelper
 	private
 	def out_path(out_file)
 		File.join(@opt[:out], out_file)
+	end
+
+	def render_to_stream(tmpl_file, data, out_file, stream_mode)
+		path = out_path(out_file)
+		FileUtils.mkdir_p(File.dirname(path))
+		File.open(path, stream_mode) { |f|
+			f << render(tmpl_file, data)
+		}
 	end
 end

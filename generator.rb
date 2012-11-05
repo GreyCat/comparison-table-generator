@@ -3,8 +3,6 @@ require 'fileutils'
 require_relative 'statistics'
 require_relative 'htmlhelper'
 
-$tmpcnt = 0
-
 class Generator
 	include HTMLHelper
 
@@ -93,11 +91,9 @@ class Generator
 					c[:data] = $2
 				end
 
-				c[:link] = "#{$tmpcnt}.html"
+				c[:link] = "#{dir[1..-1]}/#{t}.html"
 
 				render_and_output('cell.rhtml', binding, c[:link])
-
-				$tmpcnt += 1
 
 				cols << c
 			}
