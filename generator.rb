@@ -91,7 +91,9 @@ class Generator
 					c[:data] = $2
 				end
 
-				c[:link] = "#{dir[1..-1]}/#{t}.html"
+				# Strip ordering numbers from the beginning of directories' names
+				cell_dir = dir[1..-1].split('/').map { |x| x.gsub(/^\d\d-/, '') }.join('/')
+				c[:link] = "#{cell_dir}/#{t}.html"
 
 				render_and_output('cell.rhtml', binding, c[:link])
 
