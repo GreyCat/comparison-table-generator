@@ -2,7 +2,8 @@
 <div class="question-card">
 	<div class="topic"><%= @topic_names[t] %></div>
 	<div class="question">Q: <%= desc %></div>
-	<div class="answer">A: <%= c[:data] %></div>
+	<div class="short-answer"><%= c[:data] %></div>
+	<div class="long-answer"><%= c[:long] %></div>
 	<ul class="references">
 <% (c[:refs] || []).each { |r| %>
 		<li><a href="<%= r %>"><%= r %></a></li>
