@@ -50,7 +50,6 @@ class Generator
 	end
 
 	def recurse_dir(depth, dir)
-		puts "depth=#{depth} dir=#{dir.inspect}"
 		Dir.entries(File.join(@opt[:dir], dir)).sort.each { |d|
 			next if d.start_with?('.')
 			path = File.join(dir, d)
