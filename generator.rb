@@ -43,18 +43,21 @@ class Generator
 		}
 
 		render_and_output('table_header.rhtml', binding, 'full.html')
-		recurse_dir(1, @opt[:dir])
+		recurse_dir(1, '')
 		render_and_append('table_footer.rhtml', binding, 'full.html')
 
 		@stat.report
 	end
 
 	def recurse_dir(depth, dir)
-		Dir.glob("#{dir}/*").sort.each { |d|
-			check_validity(d) unless depth == 1
-			next unless FileTest.directory?(d)
-			process_dir(depth, d)
-			recurse_dir(depth + 1, d)
+		puts "depth=#{depth} dir=#{dir.inspect}"
+		Dir.entries(File.join(@opt[:dir], dir)).sort.each { |d|
+			next if d.start_with?('.')
+			path = File.join(dir, d)
+			check_validity(path) unless depth == 1
+			next unless FileTest.directory?(File.join(@opt[:dir], path))
+			process_dir(depth, path)
+			recurse_dir(depth + 1, path)
 		}
 	end
 
@@ -110,12 +113,14 @@ class Generator
 
 	# Checks that directory entry is valid and we know how to
 	# interprete it. If we don't, raises a parsing exception.
-	def check_validity(fn)
+	def check_validity(f)
+		fn = File.join(@opt[:dir], f)
+
 		# Any directory is valid - we'll just recurse into it.
 		# We're only checking file names.
 		return if FileTest.directory?(fn)
 
-		n = File.basename(fn)
+		n = File.basename(f)
 
 		topic = kind = lang = nil
 
