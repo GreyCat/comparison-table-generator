@@ -9,12 +9,12 @@
 	<title><%= global_name %></title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width">
-
-	<link rel="stylesheet" href="css/normalize.css">
-	<link rel="stylesheet" href="css/main.css">
-	<link rel="stylesheet" href="css/comparison.css">
-	<script src="js/vendor/modernizr-2.6.1.min.js"></script>
-	<script src="js/comparison.js"></script>
+<!-- <%= @nav_path %> -->
+	<link rel="stylesheet" href="<%= @root_path %>css/normalize.css">
+	<link rel="stylesheet" href="<%= @root_path %>css/main.css">
+	<link rel="stylesheet" href="<%= @root_path %>css/comparison.css">
+	<script src="<%= @root_path %>js/vendor/modernizr-2.6.1.min.js"></script>
+	<script src="<%= @root_path %>js/comparison.js"></script>
 </head>
 <body onload="javascript:loadSelected();">
 <h1><%= global_name %></h1>

@@ -29,6 +29,12 @@ module HTMLHelper
 
 	def render_to_stream(tmpl_file, data, out_file, stream_mode)
 		path = out_path(out_file)
+
+		@nav_path = out_file.split('/')
+		updir_cnt = @nav_path.length - 1
+		updir_cnt = 0 if updir_cnt < 0
+		@root_path = '../' * updir_cnt
+
 		FileUtils.mkdir_p(File.dirname(path))
 		File.open(path, stream_mode) { |f|
 			f << render(tmpl_file, data)
