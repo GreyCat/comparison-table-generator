@@ -9,7 +9,6 @@
 	<title><%= global_name %></title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width">
-<!-- <%= @nav_path %> -->
 	<link rel="stylesheet" href="<%= @root_path %>css/normalize.css">
 	<link rel="stylesheet" href="<%= @root_path %>css/main.css">
 	<link rel="stylesheet" href="<%= @root_path %>css/comparison.css">
@@ -18,3 +17,16 @@
 </head>
 <body onload="javascript:loadSelected();">
 <h1><%= global_name %></h1>
+
+<ul class="breadcrumb">
+<% (@nav_path.length + 1).times { |i|
+	caption = if i > 0 then @nav_path[i - 1] else 'Home' end
+	active = (i == @nav_path.length)
+	link = "#{@root_path}#{@nav_path.slice(0, i).join('/')}#{'/' if i > 0}index.html"
+	if active %>
+	<li class="active"><%= caption %></li>
+<%	else %>
+	<li><a href="<%= link %>"><%= caption %></a><span class="divider">&gt;</span></li>
+<%	end 
+} %>
+</ul>
