@@ -59,6 +59,9 @@ class Generator
 	end
 
 	def process_dir(depth, dir)
+		index_html = File.join(output_path(dir), 'index.html')
+		render_and_append('table_header.rhtml', binding, index_html)
+
 		desc = read_file(dir, 'desc')
 		only_header = true
 		data = {}
@@ -92,7 +95,7 @@ class Generator
 				end
 
 				# Strip ordering numbers from the beginning of directories' names
-				cell_dir = dir[1..-1].split('/').map { |x| x.gsub(/^\d\d-/, '') }.join('/')
+				cell_dir = output_path(dir)
 				c[:link] = "#{cell_dir}/#{t}.html"
 
 				render_and_output('cell.rhtml', binding, c[:link])
@@ -100,7 +103,10 @@ class Generator
 				cols << c
 			}
 			render_and_append('row.rhtml', binding, 'full.html')
+			render_and_append('row.rhtml', binding, index_html)
 		end
+
+		render_and_append('table_footer.rhtml', binding, index_html)
 	end
 
 	class ParseException < Exception; end
@@ -170,5 +176,13 @@ class Generator
 	def read_file(dir, fn)
 		fp = find_file(dir, fn)
 		fp ? File.read(fp).chomp : nil
+	end
+
+	# Returns output path for a give source directory: strips
+	# heading '/' from source directory, strips ordering numbers (i.e.
+	# "10-abc" => "abc")
+	def output_path(dir)
+		return '' if dir.nil? or dir.empty?
+		dir[1..-1].split('/').map { |x| x.gsub(/^\d\d-/, '') }.join('/')
 	end
 end
