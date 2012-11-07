@@ -2,7 +2,7 @@
 <div class="comparison-header">
 	<ul>
 <% topics.each_with_index { |t, i| %>
-		<li><input id="check-<%= t %>" type="checkbox" checked="1" onclick="javascript:switchColumn(this, <%= i + 1 %>);"/> <%= topic_names[t] %></li>
+		<li><label><input id="check-<%= t %>" type="checkbox" checked="1" onclick="javascript:switchColumn(this, <%= i + 1 %>);"/> <%= topic_names[t] %></label></li>
 <% } %>
 	</ul>
 </div>
