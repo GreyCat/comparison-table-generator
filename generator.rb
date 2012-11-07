@@ -53,14 +53,19 @@ class Generator
 			path = File.join(dir, d)
 			check_validity(path) unless depth == 1
 			next unless FileTest.directory?(File.join(@opt[:dir], path))
+
+			index_html = File.join(output_path(path.split('/').slice(0, MAX_DETAIL_DEPTH + 1).join('/')), 'index.html')
+			render_and_append('table_header.rhtml', binding, index_html) if depth <= MAX_DETAIL_DEPTH
 			process_dir(depth, path)
 			recurse_dir(depth + 1, path)
+			render_and_append('table_footer.rhtml', binding, index_html) if depth <= MAX_DETAIL_DEPTH
 		}
 	end
 
+	MAX_DETAIL_DEPTH = 2
+
 	def process_dir(depth, dir)
-		index_html = File.join(output_path(dir), 'index.html')
-		render_and_append('table_header.rhtml', binding, index_html)
+		index_html = File.join(output_path(dir.split('/').slice(0, MAX_DETAIL_DEPTH + 1).join('/')), 'index.html')
 
 		desc = read_file(dir, 'desc')
 		only_header = true
@@ -105,8 +110,6 @@ class Generator
 			render_and_append('row.rhtml', binding, 'full.html')
 			render_and_append('row.rhtml', binding, index_html)
 		end
-
-		render_and_append('table_footer.rhtml', binding, index_html)
 	end
 
 	class ParseException < Exception; end
