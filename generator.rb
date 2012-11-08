@@ -18,7 +18,7 @@ class Generator
 		@stat = Statistics.new
 
 		@lang = @opt[:lang] || DEFAULT_LANG
-		@opt[:topics] = find_file(@opt[:dir], 'topics') unless @opt[:topics]
+		@opt[:topics] = find_file('', 'topics') unless @opt[:topics]
 
 		raise ParseException.new('Main topic file not found') unless @opt[:topics]
 
