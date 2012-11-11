@@ -84,7 +84,7 @@ class Generator
 
 				@stat.inc!(t, :total)
 				@stat.inc!(t, :empty) if c[:data].nil?
-				@stat.inc!(t, :no_ref) if c[:refs].nil?
+				@stat.inc!(t, :no_ref) if c[:refs].nil? and c[:data]
 
 				# Parse special tags that influence cell
 				# styles: must be come first
