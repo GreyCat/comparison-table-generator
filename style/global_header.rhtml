@@ -16,8 +16,8 @@
 	<script src="<%= @root_path %>js/comparison.js"></script>
 </head>
 <body onload="javascript:loadSelected();">
+<div class="container">
 <h1><%= global_name %></h1>
-
 <ul class="breadcrumb">
 <% (@nav_path.length + 1).times { |i|
 	caption = if i > 0 then @nav_path[i - 1] else 'Home' end
@@ -30,3 +30,4 @@
 <%	end 
 } %>
 </ul>
+</div>

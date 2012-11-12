@@ -88,7 +88,7 @@ table.comparison code {
 	font-size: 90%;
 }
 
-table.comparison pre + pre {
+table.comparison pre + pre, .short-answer pre + pre {
 	border-top: 1px dotted #808080;
 	margin-top: 0.5em;
 	padding-top: 0.5em;
@@ -178,4 +178,9 @@ tr.header3 th {
 	border: 1px solid #C0C0C0;
 	border-radius: 5px;
 	background: #F0F0F0;
+	padding: 0.5em;
+}
+
+.short-answer pre {
+	margin: 0;
 }
