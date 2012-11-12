@@ -1,9 +1,11 @@
 <%= render('global_header.rhtml', binding) %>
-<div class="question-card">
-	<div class="topic"><%= @topic_names[t] %></div>
-	<div class="question">Q: <%= desc %></div>
+<div class="container">
+	<h2 class="question"><%= desc %></h2>
+	<div class="question-long"><%= desc_long %></div>
+	<h3 class="topic"><%= @topic_names[t] %></h3>
 	<div class="short-answer"><%= c[:data] %></div>
 	<div class="long-answer"><%= c[:long] %></div>
+	<h3 class="references">References</h3>
 	<ul class="references">
 <% (c[:refs] || []).each { |r| %>
 		<li><a href="<%= r %>"><%= r %></a></li>

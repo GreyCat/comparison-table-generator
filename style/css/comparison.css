@@ -1,3 +1,27 @@
+.container,
+.navbar-static-top .container,
+.navbar-fixed-top .container,
+.navbar-fixed-bottom .container {
+	width: 940px;
+}
+
+.container {
+	margin-right: auto;
+	margin-left: auto;
+	*zoom: 1;
+}
+
+.container:before,
+.container:after {
+	display: table;
+	line-height: 0;
+	content: "";
+}
+
+.container:after {
+	clear: both;
+}
+
 .breadcrumb {
 	padding: 8px 15px;
 	margin: 0 0 20px;
@@ -64,10 +88,10 @@ table.comparison code {
 	font-size: 90%;
 }
 
-table.comparison pre + pre {
+table.comparison pre + pre, .short-answer pre + pre {
 	border-top: 1px dotted #808080;
-        margin-top: 0.5em;
-        padding-top: 0.5em;
+	margin-top: 0.5em;
+	padding-top: 0.5em;
 }
 
 table.comparison ul {
@@ -77,14 +101,14 @@ table.comparison ul {
 
 a.reflink {
 	display: block;
-        width: 2em;
-        height: 2em;
-        float: right;
+	width: 2em;
+	height: 2em;
+	float: right;
 	text-align: center;
 	line-height: 2em; /* vertical centering trick */
 
 	background: #EDB801;
-        color: #404040;
+	color: #404040;
 
 	border: 1px solid rgba(0,0,0,0.15);
 	border-radius: 4px;
@@ -148,4 +172,15 @@ tr.header3 th {
 
 .cell_na {
 	background: #C0C0C0;
+}
+
+.short-answer {
+	border: 1px solid #C0C0C0;
+	border-radius: 5px;
+	background: #F0F0F0;
+	padding: 0.5em;
+}
+
+.short-answer pre {
+	margin: 0;
 }

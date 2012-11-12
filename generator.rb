@@ -68,6 +68,7 @@ class Generator
 		index_html = File.join(output_path(dir.split('/').slice(0, MAX_DETAIL_DEPTH + 1).join('/')), 'index.html')
 
 		desc = read_file(dir, 'desc')
+		desc_long = read_file(dir, 'desc-long')
 		only_header = true
 		data = {}
 		@topics.each { |t|
