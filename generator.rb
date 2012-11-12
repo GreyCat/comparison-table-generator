@@ -63,6 +63,7 @@ class Generator
 		render_and_append('table_header.rhtml', binding, index_html)
 
 		desc = read_file(dir, 'desc')
+		desc_long = read_file(dir, 'desc-long')
 		only_header = true
 		data = {}
 		@topics.each { |t|

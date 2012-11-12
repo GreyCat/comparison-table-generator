@@ -1,6 +1,7 @@
 <%= render('global_header.rhtml', binding) %>
 <div class="container">
 	<h2 class="question"><%= desc %></h2>
+	<div class="question-long"><%= desc_long %></div>
 	<h3 class="topic"><%= @topic_names[t] %></h3>
 	<div class="short-answer"><%= c[:data] %></div>
 	<div class="long-answer"><%= c[:long] %></div>
