@@ -1,3 +1,27 @@
+.container,
+.navbar-static-top .container,
+.navbar-fixed-top .container,
+.navbar-fixed-bottom .container {
+	width: 940px;
+}
+
+.container {
+	margin-right: auto;
+	margin-left: auto;
+	*zoom: 1;
+}
+
+.container:before,
+.container:after {
+	display: table;
+	line-height: 0;
+	content: "";
+}
+
+.container:after {
+	clear: both;
+}
+
 .breadcrumb {
 	padding: 8px 15px;
 	margin: 0 0 20px;
@@ -148,4 +172,10 @@ tr.header3 th {
 
 .cell_na {
 	background: #C0C0C0;
+}
+
+.short-answer {
+	border: 1px solid #C0C0C0;
+	border-radius: 5px;
+	background: #F0F0F0;
 }
