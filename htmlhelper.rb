@@ -1,5 +1,6 @@
 require 'erb'
 require 'fileutils'
+require 'cgi'
 
 module HTMLHelper
 	@@tmpl_cache = {}
@@ -20,6 +21,10 @@ module HTMLHelper
 			@@tmpl_cache[tmpl_file] = tmpl
 		end
 		return tmpl.result(data)
+	end
+
+	def htmlize(str)
+		CGI.escapeHTML(str)
 	end
 
 	private

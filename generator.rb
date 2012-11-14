@@ -32,6 +32,14 @@ class Generator
 		}
 
 		@global_name = read_file(@opt[:dir], 'desc')
+
+		@macros = {}
+
+		# Load style builtin macros
+		load_macros(File.join(@opt[:style], '_macro'))
+
+		# Load topic-specific macros
+		load_macros(File.join(@opt[:dir], '_macro'))
 	end
 
 	def run
@@ -49,7 +57,7 @@ class Generator
 
 	def recurse_dir(depth, dir)
 		Dir.entries(File.join(@opt[:dir], dir)).sort.each { |d|
-			next if d.start_with?('.')
+			next if d.start_with?('.') or d.start_with?('_')
 			path = File.join(dir, d)
 			check_validity(path) unless depth == 1
 			next unless FileTest.directory?(File.join(@opt[:dir], path))
@@ -86,7 +94,7 @@ class Generator
 				c[:long] = read_file(dir, "#{t}-long")
 
 				fn = find_file(dir, "#{t}-ref")
-				c[:refs] = File.open(fn).readlines.each { |x| x.chomp! } if fn
+				c[:refs] = File.open(fn).readlines.map { |x| parse_macro(x.chomp) } if fn
 
 				@stat.inc!(t, :total)
 				@stat.inc!(t, :empty) if c[:data].nil?
@@ -99,6 +107,13 @@ class Generator
 					c[:symbol] = $1
 					c[:data] = $2
 				end
+
+				# Render macros in refs
+				c[:refs].map! { |r|
+					macro = @macros[r[:macro]]
+					raise ParseException.new("Unknown macro found: \"#{r[:macro]}\"") unless macro
+					macro.result(binding)
+				} if c[:refs]
 
 				# Strip ordering numbers from the beginning of directories' names
 				cell_dir = output_path(dir)
@@ -188,5 +203,34 @@ class Generator
 	def output_path(dir)
 		return '' if dir.nil? or dir.empty?
 		dir[1..-1].split('/').map { |x| x.gsub(/^\d\d-/, '') }.join('/')
+	end
+
+	def load_macros(dir)
+		Dir.entries(dir).each { |f|
+			macro_file = File.join(dir, f)
+			next if f.start_with?('.')
+			macro_cnt = File.read(macro_file)
+			@macros[f] = ERB.new(macro_cnt, nil, nil, "_e#{f.hash.abs}")
+			$stderr.puts "Loaded macro: #{f}"
+		}
+	end
+
+	def parse_macro(str)
+		unless str =~ /^\{\{(.*)\}\}$/
+			return :macro => 'plain', :url => str
+		else
+			name, *args = $1.split('|')
+			res = { :macro => name }
+			argnum = 0
+			args.each { |a|
+				if a =~ /^(.*)=(.*)$/
+					res[$1] = $2
+				else
+					res[argnum] = a
+					argnum += 1
+				end
+			}
+			return res
+		end
 	end
 end

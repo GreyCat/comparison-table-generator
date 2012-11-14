@@ -1,0 +1,2 @@
+<a href="<%= htmlize r[:url] %>"><%= htmlize r[:url] %></a>
+
