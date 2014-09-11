@@ -10,6 +10,8 @@ class Generator
 	attr_reader :topic_names
 	attr_reader :global_name
 
+	MACRO_DIR = '_macro'
+
 	def initialize(opt)
 		@opt = opt
 
@@ -35,11 +37,13 @@ class Generator
 
 		@macros = {}
 
-		# Load style builtin macros
-		load_macros(File.join(@opt[:style], '_macro'))
+		if Dir.exists?(MACRO_DIR)
+			# Load style builtin macros
+			load_macros(File.join(@opt[:style], MACRO_DIR))
 
-		# Load topic-specific macros
-		load_macros(File.join(@opt[:dir], '_macro'))
+			# Load topic-specific macros
+			load_macros(File.join(@opt[:dir], MACRO_DIR))
+		end
 	end
 
 	def run
