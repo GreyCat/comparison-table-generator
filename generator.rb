@@ -35,15 +35,15 @@ class Generator
 
 		@global_name = read_file(@opt[:dir], 'desc')
 
-		@macros = {}
+		@macros = {
+			'plain' => ERB.new('<a href="<%= r[:url] %>"><%= r[:url] %></a>', nil, nil, "_ePLAIN")
+		}
 
-		if Dir.exists?(MACRO_DIR)
-			# Load style builtin macros
-			load_macros(File.join(@opt[:style], MACRO_DIR))
+		# Load style builtin macros
+		load_macros(File.join(@opt[:style], MACRO_DIR)) if Dir.exists?(File.join(@opt[:style], MACRO_DIR))
 
-			# Load topic-specific macros
-			load_macros(File.join(@opt[:dir], MACRO_DIR))
-		end
+		# Load topic-specific macros
+		load_macros(File.join(@opt[:dir], MACRO_DIR)) if Dir.exists?(File.join(@opt[:dir], MACRO_DIR))
 	end
 
 	def run
