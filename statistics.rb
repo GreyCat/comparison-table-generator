@@ -12,6 +12,9 @@ class Statistics
 		end
 
 		def to_s
+			if @data[:total] == @data[:empty]
+				return sprintf('%d (100%% empty)', @data[:total].to_s)
+			end
 			sprintf(
 				'%d (%d%% empty, %d%% w/o ref)',
 				@data[:total],
