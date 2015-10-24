@@ -1,4 +1,7 @@
 <%= render('global_header.rhtml', binding) %>
+<div class="container">
+	<label><input id="show-for-header" type="checkbox" checked="1" onclick="javascript:setForHeadersVisibility(this.checked);"/> Show proposed additions to headers (includes, imports, etc)</label>
+</div>
 <div class="comparison-header">
 	<ul>
 <% topics.each_with_index { |t, i| %>
