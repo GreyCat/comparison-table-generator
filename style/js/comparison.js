@@ -47,3 +47,20 @@ function setColumnVisibility(tbl, col, state) {
 			cell.style.display = d;
 	}
 }
+
+function setForHeadersVisibility(state) {
+	var css = getCssByTitle('temp-styles');
+	var d = state ? 'block' : 'none';
+	if (css.cssRules.length > 0) {
+		css.removeRule(0);
+	}
+	css.insertRule(".for-header { display: " + d + "; }", 0);
+}
+
+function getCssByTitle(t) {
+	for (var i = 0; i < document.styleSheets.length; i++) {
+		var sheet = document.styleSheets[i];
+		if (sheet.title == t)
+			return sheet;
+	}
+}
