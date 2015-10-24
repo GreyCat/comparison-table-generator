@@ -61,7 +61,7 @@ class Generator
 
 	def recurse_dir(depth, dir)
 		Dir.entries(File.join(@opt[:dir], dir)).sort.each { |d|
-			next if d.start_with?('.') or d.start_with?('_')
+			next if d.start_with?('.') or d.start_with?('_') or d.end_with?('~')
 			path = File.join(dir, d)
 			check_validity(path) unless depth == 1
 			next unless FileTest.directory?(File.join(@opt[:dir], path))
