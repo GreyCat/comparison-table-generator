@@ -93,43 +93,53 @@ class Generator
 		else
 			cols = []
 			@topics.each { |t|
-				c = { :data => data[t] }
-
-				c[:long] = read_file(dir, "#{t}-long")
-
-				fn = find_file(dir, "#{t}-ref")
-				c[:refs] = File.open(fn).readlines.map { |x| parse_macro(x.chomp) } if fn
-
-				@stat.inc!(t, :total)
-				@stat.inc!(t, :empty) if c[:data].nil?
-				@stat.inc!(t, :no_ref) if c[:refs].nil? and c[:data]
-
-				# Parse special tags that influence cell
-				# styles: must be come first
-				case c[:data]
-				when /^<(yes|no|na)\s*\/?>(.*)$/mi
-					c[:symbol] = $1
-					c[:data] = $2
-				end
-
-				# Render macros in refs
-				c[:refs].map! { |r|
-					macro = @macros[r[:macro]]
-					raise ParseException.new("Unknown macro found: \"#{r[:macro]}\"") unless macro
-					macro.result(binding)
-				} if c[:refs]
-
-				# Strip ordering numbers from the beginning of directories' names
-				cell_dir = output_path(dir)
-				c[:link] = "#{cell_dir}/#{t}.html"
-
+				c = process_cell(dir, t, data[t])
 				render_and_output('cell.rhtml', binding, c[:link])
-
 				cols << c
 			}
 			render_and_append('row.rhtml', binding, 'full.html')
 			render_and_append('row.rhtml', binding, index_html)
 		end
+	end
+
+	# Process one cell and prepare cell structure.
+	#
+	# @param dir [String] directory path to process
+	# @param t [String] topic to process; will be used to search for additional files
+	# @param data [String] pre-read contents of the main data file for the given topic
+	# @return cell structure
+	def process_cell(dir, t, data)
+		c = { :data => data }
+
+		c[:long] = read_file(dir, "#{t}-long")
+
+		fn = find_file(dir, "#{t}-ref")
+		c[:refs] = File.open(fn).readlines.map { |x| parse_macro(x.chomp) } if fn
+
+		@stat.inc!(t, :total)
+		@stat.inc!(t, :empty) if c[:data].nil?
+		@stat.inc!(t, :no_ref) if c[:refs].nil? and c[:data]
+
+		# Parse special tags that influence cell
+		# styles: must be come first
+		case c[:data]
+		when /^<(yes|no|na)\s*\/?>(.*)$/mi
+			c[:symbol] = $1
+			c[:data] = $2
+		end
+
+		# Render macros in refs
+		c[:refs].map! { |r|
+			macro = @macros[r[:macro]]
+			raise ParseException.new("Unknown macro found: \"#{r[:macro]}\"") unless macro
+			macro.result(binding)
+		} if c[:refs]
+
+		# Strip ordering numbers from the beginning of directories' names
+		cell_dir = output_path(dir)
+		c[:link] = "#{cell_dir}/#{t}.html"
+
+		c
 	end
 
 	class ParseException < Exception; end
