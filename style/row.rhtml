@@ -9,7 +9,7 @@ when 'yes' then %><div class="cell_symbol"><%= "\u2611" %></div><%
 when 'no' then %><div class="cell_symbol"><%= "\u2610" %></div><%
 when 'na' then %><div class="cell_symbol">N/A</div><%
 end
-%><%= c[:data] || '?' %></div>
+%><%= c[:data_bare] || '?' %></div>
 		</a>
 	</td>
 <%		} %>

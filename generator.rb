@@ -128,6 +128,9 @@ class Generator
 			c[:data] = $2
 		end
 
+		# Prepare bare, linkless version for row template
+		c[:data_bare] = c[:data].gsub(/<a href="(.*?)">(.*?)<\/a>/, '\2') if c[:data]
+
 		# Render macros in refs
 		c[:refs].map! { |r|
 			macro = @macros[r[:macro]]
