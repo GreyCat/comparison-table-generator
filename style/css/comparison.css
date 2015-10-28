@@ -193,3 +193,27 @@ tr.header3 th {
 .for-header {
 	color: #909090;
 }
+
+.header-file:before {
+	content: "Header file";
+	float: right;
+	display: block;
+	width: 8em;
+	background: #808080;
+	color: #C0C0C0;
+	font-size: 80%;
+	padding: 0.2em;
+	text-align: center;
+}
+
+.main-file:before {
+	content: "Main file";
+	float: right;
+	display: block;
+	width: 8em;
+	background: #808080;
+	color: #C0C0C0;
+	font-size: 80%;
+	padding: 0.2em;
+	text-align: center;
+}
