@@ -194,26 +194,22 @@ tr.header3 th {
 	color: #909090;
 }
 
-.header-file:before {
-	content: "Header file";
+.header-file:before, .main-file:before {
 	float: right;
 	display: block;
-	width: 8em;
+	width: 7em;
 	background: #808080;
 	color: #C0C0C0;
+	font-family: sans-serif;
 	font-size: 80%;
 	padding: 0.2em;
 	text-align: center;
 }
 
+.header-file:before {
+	content: "Header file";
+}
+
 .main-file:before {
 	content: "Main file";
-	float: right;
-	display: block;
-	width: 8em;
-	background: #808080;
-	color: #C0C0C0;
-	font-size: 80%;
-	padding: 0.2em;
-	text-align: center;
 }
