@@ -19,7 +19,7 @@ class Statistics
 				'%d (%d%% empty, %d%% w/o ref)',
 				@data[:total],
 				(@data[:empty] || 0) * 100.0 / @data[:total],
-				(@data[:no_ref] || 0) * 100.0 / (@data[:total] - @data[:empty])
+				(@data[:no_ref] || 0) * 100.0 / (@data[:total] - (@data[:empty] || 0))
 			)
 		end
 	end
